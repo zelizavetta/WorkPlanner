@@ -62,7 +62,9 @@ def createSubtask(conn, user_id, parent_id):
 def calculateProgress(conn, task_id):
     cursor = conn.cursor()
     try:
-        query = "SELECT status FROM tasks WHERE id = %s"
+        query = """
+        SELECT status FROM tasks WHERE id = %s;
+        """
         cursor.execute(query, (task_id,))
         status = cursor.fetchone()
         
@@ -71,3 +73,17 @@ def calculateProgress(conn, task_id):
     except Exception as e:
         print(f"Ошибка при установки прогресса: {e}")
         return None
+    
+def deleteTask(conn, task_id):
+    cursor = conn.cursor()
+    try:
+        query = """
+        DELETE FROM tasks WHERE id = %s;
+        """
+        cursor.execute(query, (task_id,))
+        conn.commit()
+        return task_id
+    except Exception as e:
+        print(f"Ошибка при удалении задания: {e}")
+    finally:
+        cursor.close()
